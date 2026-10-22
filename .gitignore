@@ -9,4 +9,4 @@ data/
 !.env.example
 npm-debug.log*
 exports/
-.env
+.vscode/
