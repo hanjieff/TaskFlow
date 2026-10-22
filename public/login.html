@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in | TaskFlow</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/api.js" defer></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js" defer></script>
+</head>
+<body data-page="login">
+  <div class="auth-page">
+    <aside class="auth-story">
+      <div class="brand"><span class="brand-mark">T</span> TaskFlow</div>
+      <div class="story-copy">
+        <p class="eyebrow">A little structure. A lot of possibility.</p>
+        <h1>Less chaos.<br>More flow.</h1>
+        <p>A calm home for your projects, your next steps, and the work that matters.</p>
+        <div class="story-preview" aria-hidden="true">
+          <span class="preview-label">YOUR NEXT BIG IDEA</span>
+          <strong>Make something meaningful.</strong>
+          <div class="preview-track"><span></span></div>
+          <div class="preview-tags"><span>Plan it</span><span>Build it</span><span>Ship it</span></div>
+        </div>
+      </div>
+      <p class="story-footnote">Built for progress, not pressure.</p>
+    </aside>
+    <main class="auth-main">
+      <button class="button quiet theme-button" type="button" data-action="toggle-theme">Light mode</button>
+      <div class="auth-form-wrap">
+        <p class="eyebrow">YOUR PERSONAL WORKSPACE</p>
+        <h2>Welcome back.</h2>
+        <p class="muted">Sign in to pick up right where you left off.</p>
+        <form id="auth-form" class="form-stack">
+          <label>Email address
+            <input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com">
+          </label>
+          <label>Password
+            <span class="password-field">
+              <input name="password" aria-label="Password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Your password">
+              <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false" data-action="toggle-password">Show</button>
+            </span>
+          </label>
+          <p id="auth-error" class="form-error" role="alert" hidden></p>
+          <button id="auth-submit" type="submit" class="button primary">Sign in</button>
+        </form>
+        <p class="auth-switch">New around here? <a href="signup.html">Create an account</a></p>
+        <div class="local-note">
+          <strong>Real SQLite storage. Local learning project.</strong>
+          <p>Accounts and workspaces are stored on the local server. Use a made-up password while studying this project.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

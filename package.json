@@ -1,0 +1,19 @@
+{
+  "name": "taskflow-database",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local learning-oriented TaskFlow server with Node.js and SQLite",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node init-db.js",
+    "inspect-db": "node inspect-db.js",
+    "export-csv": "node export-csv.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
+  }
+}

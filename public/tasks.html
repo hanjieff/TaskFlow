@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#103F2E">
+  <meta name="description" content="A calm project workspace with server-side accounts and real SQLite storage.">
+  <link rel="icon" href="data:,">
+  <title>TaskFlow — Task board</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/theme.js"></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/workspace.js" defer></script>
+</head>
+<body data-page="tasks">
+  <div class="workspace">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">T</span> TaskFlow</div>
+      <p class="nav-caption">YOUR SPACE</p>
+      <nav aria-label="Main navigation">
+        <a href="index.html"><span aria-hidden="true">01</span>Overview</a>
+        <a href="projects.html"><span aria-hidden="true">02</span>Projects</a>
+        <a href="tasks.html" class="active" aria-current="page"><span aria-hidden="true">03</span>Task board</a>
+      </nav>
+      <div class="sidebar-note">
+        <span class="status-dot"></span> SQLite workspace
+        <p>No cloud. No noise.<br>Just you and your next step.</p>
+      </div>
+      <div class="sidebar-bottom">
+        <button class="button quiet" type="button" data-action="toggle-theme">Light mode</button>
+        <button class="button quiet" type="button" data-action="sign-out">Sign out</button>
+      </div>
+    </aside>
+    <div class="workspace-main">
+      <header class="topbar">
+        <label class="search-field">
+          <span class="sr-only">Search workspace</span>
+          <input id="workspace-search" type="search" placeholder="Find a project, task, or assignee...">
+        </label>
+        <div class="profile">
+          <span class="avatar" id="profile-avatar" aria-hidden="true"></span>
+          <div><strong id="profile-name"></strong><span>Personal workspace</span></div>
+        </div>
+      </header>
+      <main id="main-content" tabindex="-1" class="page-content">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR WORKSPACE, IN FLOW</p><h1>Task board</h1></div>
+          <button class="button primary" type="button" data-action="new-project">+ New project</button>
+        </div>
+        <section class="empty-state panel" id="workspace-empty" hidden>
+          <span class="empty-emblem" aria-hidden="true">T</span>
+          <h2>Your next chapter starts here.</h2>
+          <p>Create your first project, or explore a small editable example.</p>
+          <div class="empty-actions">
+            <button class="button primary" type="button" data-action="new-project">Create first project</button>
+            <button class="button secondary" type="button" data-action="load-example">Load example workspace</button>
+          </div>
+        </section>
+        <div class="work-sections" id="work-sections" hidden>
+          <section aria-label="Tasks" id="tasks-section">
+            <div class="section-heading">
+              <h2>Task board</h2>
+              <button class="button secondary" type="button" data-action="new-task">+ New task</button>
+            </div>
+            <div class="filters">
+              <label>Project<select id="project-filter" aria-label="Filter by project"><option value="all">All projects</option></select></label>
+              <label>Priority
+                <select id="priority-filter" aria-label="Filter by priority">
+                  <option value="all">All priorities</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </label>
+              <button class="text-button" type="button" data-action="clear-filters">Clear filters</button>
+              <span class="muted" id="task-count"></span>
+            </div>
+            <div class="kanban">
+              <section class="board-column todo" aria-label="To Do column" data-status="todo">
+                <div class="column-heading"><h3>To Do</h3><span data-field="count">0</span></div>
+                <div data-field="cards"></div>
+                <p class="column-empty" data-field="empty">A little breathing room.<br>Drop a task here.</p>
+              </section>
+              <section class="board-column progress" aria-label="In Progress column" data-status="progress">
+                <div class="column-heading"><h3>In Progress</h3><span data-field="count">0</span></div>
+                <div data-field="cards"></div>
+                <p class="column-empty" data-field="empty">A little breathing room.<br>Drop a task here.</p>
+              </section>
+              <section class="board-column done" aria-label="Done column" data-status="done">
+                <div class="column-heading"><h3>Done</h3><span data-field="count">0</span></div>
+                <div data-field="cards"></div>
+                <p class="column-empty" data-field="empty">A little breathing room.<br>Drop a task here.</p>
+              </section>
+            </div>
+            <p class="empty-inline" id="tasks-empty" hidden></p>
+            <p class="board-help">Drag cards on desktop, or use each card’s status menu on any device. Assignees are display names, not shared accounts.</p>
+          </section>
+        </div>
+        <footer class="page-footer">TaskFlow · SQLite workspace · Your records are saved on the local server.</footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <dialog id="project-dialog" class="editor-dialog" aria-labelledby="project-dialog-title">
+    <div class="dialog-heading">
+      <h2 id="project-dialog-title">New project</h2>
+      <button class="text-button" type="button" data-action="close-dialog" aria-label="Close editor">Close</button>
+    </div>
+    <form id="project-form" class="form-stack">
+      <label>Project name<input name="name" required maxlength="80" autofocus placeholder="Give your idea a name"></label>
+      <label>Description<textarea name="description" maxlength="2000" rows="3" placeholder="What are you working toward?"></textarea></label>
+      <p class="form-error" id="project-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="button secondary" type="button" data-action="close-dialog">Cancel</button>
+        <button class="button primary" type="submit">Save project</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="task-dialog" class="editor-dialog" aria-labelledby="task-dialog-title">
+    <div class="dialog-heading">
+      <h2 id="task-dialog-title">New task</h2>
+      <button class="text-button" type="button" data-action="close-dialog" aria-label="Close editor">Close</button>
+    </div>
+    <form id="task-form" class="form-stack">
+      <label>Task title<input name="title" required maxlength="120" autofocus placeholder="What is the next step?"></label>
+      <label>Description<textarea name="description" maxlength="2000" rows="3"></textarea></label>
+      <label>Project<select name="projectId" aria-label="Project" required></select></label>
+      <div class="form-row">
+        <label>Status
+          <select name="status" aria-label="Status"><option value="todo">To Do</option><option value="progress">In Progress</option><option value="done">Done</option></select>
+        </label>
+        <label>Priority
+          <select name="priority" aria-label="Priority"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Due date<input name="dueDate" type="date"></label>
+        <label>Assignee<input name="assignee" maxlength="80" placeholder="Display name only"></label>
+      </div>
+      <p class="form-error" id="task-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="button secondary" type="button" data-action="close-dialog">Cancel</button>
+        <button class="button primary" type="submit">Save task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="project-template">
+    <article class="project-card">
+      <div class="project-emblem" data-field="emblem" aria-hidden="true"></div>
+      <h3 data-field="name"></h3>
+      <p class="muted" data-field="description"></p>
+      <div class="project-progress"><span data-field="tasks"></span><span data-field="completed"></span></div>
+      <progress data-field="progress" value="0" max="1"></progress>
+      <div class="project-actions">
+        <button class="text-button" type="button" data-action="open-board">Open board →</button>
+        <button class="text-button" type="button" data-action="edit-project">Edit</button>
+        <button class="text-button danger" type="button" data-action="delete-project">Delete</button>
+      </div>
+    </article>
+  </template>
+  <template id="task-template">
+    <article class="task-card" draggable="true">
+      <div class="card-top"><span class="priority" data-field="priority"></span><span class="task-project" data-field="project"></span></div>
+      <h3 data-field="title"></h3>
+      <p class="muted task-description" data-field="description"></p>
+      <div class="task-meta"><span data-field="assignee"></span><span data-field="due-date"></span></div>
+      <div class="task-actions">
+        <select data-field="status"><option value="todo">To Do</option><option value="progress">In Progress</option><option value="done">Done</option></select>
+        <button class="text-button" type="button" data-action="edit-task">Edit</button>
+        <button class="text-button danger" type="button" data-action="delete-task">Delete</button>
+      </div>
+    </article>
+  </template>
+  <template id="activity-template">
+    <div class="activity-row"><span class="status-dot"></span><p data-field="text"></p><time data-field="date"></time></div>
+  </template>
+</body>
+</html>
